@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
+axios.defaults.baseURL = 'https://kropotam.onrender.com';
+
 function App() {
   const [rsvpData, setRsvpData] = useState({
     name: '',
@@ -16,7 +18,7 @@ function App() {
   useEffect(() => {
     const fetchGifts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/gifts');
+        const response = await axios.get('/api/gifts');
         setGifts(response.data.gifts);
       } catch (error) {
         console.error('Error fetching gifts', error);
@@ -37,7 +39,7 @@ function App() {
   const handleRsvpSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/rsvp', rsvpData);
+      const response = await axios.post('/api/rsvp', rsvpData);
       setResponseMessage(response.data.message);
       console.log(response.data);
     } catch (error) {
@@ -48,7 +50,7 @@ function App() {
 
   const handleGiftSelect = async (gift) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/gift', { gift });
+      const response = await axios.post('/api/gift', { gift });
       setSelectedGift(gift);
       setResponseMessage(response.data.message);
       console.log(response.data);
@@ -61,22 +63,22 @@ function App() {
   return (
     <div className="App">
       <header>
-        <h1>Welcome to Our Wedding Website</h1>
+        <h1>Witaj na naszej weselnej stronie!</h1>
       </header>
       <main>
-        <img src={require('./home.jpg')} alt="Wedding" style={{ width: '60%', height: 'auto', marginBottom: '20px' }} />
+        <img src={require('./home.jpg')} alt="Wedding" style={{ width: '50%', height: 'auto', marginBottom: '20px' }} />
         
         <section>
-          <h2>Wedding Details</h2>
-          <p>Join us for our wedding celebration on [Date] at [Venue Name].</p>
-          <p>We would be delighted to have you with us on this special day!</p>
+          <h2>Weselne info</h2>
+          <p>Wesele odbędzie się 28 czerwca w pałacu w Biedrusku.</p>
+          <p>Mamy nadzieję że do nas dołączysz!</p>
         </section>
 
         <section>
           <h2>RSVP</h2>
           <form onSubmit={handleRsvpSubmit}>
             <div>
-              <label>Name:</label>
+              <label>Imię:</label>
               <input
                 type="text"
                 name="name"
@@ -96,34 +98,34 @@ function App() {
               />
             </div>
             <div>
-              <label>Will you attend?</label>
+              <label>Czy będziesz?</label>
               <select
                 name="attendance"
                 value={rsvpData.attendance}
                 onChange={handleRsvpChange}
                 required
               >
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
+                <option value="yes">Tak</option>
+                <option value="no">Nie</option>
               </select>
             </div>
-            <button type="submit">Submit</button>
+            <button type="submit">Wyślij</button>
           </form>
         </section>
 
         <section>
-          <h2>Gift Selection</h2>
+          <h2>Wybierz prezent</h2>
           <ul>
             {gifts.map((gift, index) => (
               <li key={index}>
-                <span>{gift.gift} {gift.selected ? '(Selected)' : ''}</span>
+                <span>{gift.gift} {gift.selected ? '(Już wybrany)' : ''}</span>
                 {!gift.selected && (
                   <button onClick={() => handleGiftSelect(gift.gift)}>Select</button>
                 )}
               </li>
             ))}
           </ul>
-          {selectedGift && <p>You selected: {selectedGift}</p>}
+          {selectedGift && <p>Wybrałeś: {selectedGift}</p>}
         </section>
 
         {responseMessage && <p>{responseMessage}</p>}
